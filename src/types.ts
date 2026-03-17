@@ -1,9 +1,11 @@
-export interface BookData {
+export interface MovieData {
   id: number;
   title: string;
   subTitle: string;
-  author: string;
-  publisher: string;
+  genres: string[];
   description: string;
-  coverImgUrl: string;
+  runtime: number;
+  company: string;
+  releaseDate: string;
+  posterImgUrl: string;
 }

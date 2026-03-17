@@ -1,6 +1,5 @@
-import books from "@/mock/books.json";
-import BookItem from "@/components/book-item";
-import { BookData } from "@/types";
+import MovieItem from "@/components/movie-item";
+import { MovieData } from "@/types";
 
 export default async function Page({
   searchParams,
@@ -10,7 +9,7 @@ export default async function Page({
   const { q } = await searchParams;
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/search?q=${q}`,
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/search?q=${q}`,
     { cache: "force-cache" },
   );
 
@@ -18,12 +17,18 @@ export default async function Page({
     return <div>오류가 발생했습니다...</div>;
   }
 
-  const searchBooks = await response.json();
+  const searchMovies = await response.json();
 
   return (
-    <div>
-      {searchBooks.map((book: BookData) => (
-        <BookItem key={book.id} {...book} />
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(150px, 3fr))",
+        gap: "16px",
+      }}
+    >
+      {searchMovies.map((movie: MovieData) => (
+        <MovieItem key={movie.id} {...movie} />
       ))}
     </div>
   );

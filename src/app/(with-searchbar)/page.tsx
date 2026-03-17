@@ -1,11 +1,10 @@
-import BookItem from "@/components/book-item";
 import style from "./page.module.css";
-import books from "@/mock/books.json";
-import { BookData } from "@/types";
+import { MovieData } from "@/types";
+import MovieItem from "@/components/movie-item";
 
-async function AllBooks() {
+async function AllMovies() {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`,
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie`,
     { cache: "force-cache" },
   );
 
@@ -13,20 +12,20 @@ async function AllBooks() {
     return <div>오류가 발생했습니다...</div>;
   }
 
-  const allBooks = await response.json();
+  const allMovies = await response.json();
 
   return (
-    <div>
-      {allBooks.map((book: BookData) => (
-        <BookItem key={book.id} {...book} />
+    <>
+      {allMovies.map((movie: MovieData) => (
+        <MovieItem key={movie.id} {...movie} />
       ))}
-    </div>
+    </>
   );
 }
 
-async function RecoBooks() {
+async function RecoMovies() {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`,
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/random`,
     { next: { revalidate: 3 } },
   );
 
@@ -37,11 +36,11 @@ async function RecoBooks() {
   const recoBooks = await response.json();
 
   return (
-    <div>
-      {recoBooks.map((book: BookData) => (
-        <BookItem key={book.id} {...book} />
+    <>
+      {recoBooks.map((movie: MovieData) => (
+        <MovieItem key={movie.id} {...movie} />
       ))}
-    </div>
+    </>
   );
 }
 
@@ -49,12 +48,16 @@ export default async function Home() {
   return (
     <div className={style.container}>
       <section>
-        <h3>지금 추천하는 도서</h3>
-        <RecoBooks />
+        <h3>지금 가장 추천하는 영화</h3>
+        <div>
+          <RecoMovies />
+        </div>
       </section>
       <section>
-        <h3>등록된 모든 도서</h3>
-        <AllBooks />
+        <h3>등록된 모든 영화</h3>
+        <div>
+          <AllMovies />
+        </div>
       </section>
     </div>
   );
