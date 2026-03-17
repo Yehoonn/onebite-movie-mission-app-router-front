@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 한입 씨네마 - App Router Ver
+
+App Router 버전으로 구현한 한입 씨네마 프로젝트입니다.  
+페이지 라우터와의 매커니즘 차이를 느껴보며 동일한 프로젝트를 다시 구현합니다.
+
+## 0. 백엔드 서버 설정
+
+한입 씨네마 백엔드 서버를 먼저 설정해주세요.
+
+- **저장소**: [onebite-nextjs/challenge__onebite-cinema-server](https://github.com/onebite-nextjs/challenge__onebite-cinema-server)
+- **세팅 방법**: 강의 "1.3 실습용 백엔드 서버 세팅하기"와 동일
+  1. 새로운 Supabase 프로젝트 생성
+  2. Connection String 설정
+  3. 백엔드 서버 가동
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인할 수 있습니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 기능 요구사항
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1) Home 페이지 (`/`)
+
+- **데이터**: 더미가 아닌 **실제 백엔드 서버** 데이터 사용
+- **추천 영화**: 랜덤 3개, **3초 주기**로 변경
+- **모든 영화**: DB의 모든 영화 표시
+- **라우트**: 풀 라우트 캐시 포함 → **Static 페이지**로 설정
+
+### 2) Search 페이지 (`/search?q=검색어`)
+
+- 검색 결과를 **백엔드 서버**에서 불러와 렌더링
+- 향후 최적화 적용 예정 → **Dynamic 페이지**로 설정
+
+### 3) Movie 페이지 (`/movie/[영화아이디]`)
+
+- 영화 정보를 **백엔드 서버**에서 불러와 렌더링
+- **빠른 응답**: 존재하는 모든 `/movie/[id]` 페이지 캐싱
+- **라우트**: 풀 라우트 캐시 포함 → **Static 페이지**로 설정
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
