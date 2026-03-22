@@ -1,6 +1,8 @@
 import style from "./page.module.css";
 import { MovieData } from "@/types";
 import MovieItem from "@/components/movie-item";
+import { Suspense } from "react";
+import BookListSkeleton from "@/components/skeleton/book-list-skeleton";
 
 async function AllMovies() {
   const response = await fetch(
@@ -33,11 +35,11 @@ async function RecoMovies() {
     return <div>오류가 발생했습니다...</div>;
   }
 
-  const recoBooks = await response.json();
+  const recoMovies = await response.json();
 
   return (
     <>
-      {recoBooks.map((movie: MovieData) => (
+      {recoMovies.map((movie: MovieData) => (
         <MovieItem key={movie.id} {...movie} />
       ))}
     </>
@@ -50,13 +52,23 @@ export default async function Home() {
       <section>
         <h3>지금 가장 추천하는 영화</h3>
         <div>
-          <RecoMovies />
+          <Suspense fallback={<BookListSkeleton count={3} />}>
+            <RecoMovies />
+          </Suspense>
         </div>
       </section>
       <section>
         <h3>등록된 모든 영화</h3>
         <div>
-          <AllMovies />
+          <Suspense
+            fallback={
+              <>
+                <BookListSkeleton count={5} />
+              </>
+            }
+          >
+            <AllMovies />
+          </Suspense>
         </div>
       </section>
     </div>

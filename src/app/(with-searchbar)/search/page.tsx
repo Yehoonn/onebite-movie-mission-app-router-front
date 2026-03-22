@@ -1,7 +1,9 @@
 import MovieItem from "@/components/movie-item";
+import BookListSkeleton from "@/components/skeleton/book-list-skeleton";
 import { MovieData } from "@/types";
+import { Suspense } from "react";
 
-export default async function Page({
+async function SearchResult({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string }>;
@@ -31,5 +33,31 @@ export default async function Page({
         <MovieItem key={movie.id} {...movie} />
       ))}
     </div>
+  );
+}
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const params = await searchParams;
+  return (
+    <Suspense
+      key={params.q ?? ""}
+      fallback={
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(150px, 3fr))",
+            gap: "16px",
+          }}
+        >
+          <BookListSkeleton count={3} />
+        </div>
+      }
+    >
+      <SearchResult searchParams={searchParams} />
+    </Suspense>
   );
 }

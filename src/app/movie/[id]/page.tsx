@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
-import { MovieData } from "@/types";
+import { MovieData, ReviewData } from "@/types";
+import { Suspense } from "react";
+import ReviewItem from "@/components/review-item";
+import ReviewEditor from "@/components/review-editor";
 
 export async function generateStaticParams() {
   const response = await fetch(
@@ -16,13 +19,7 @@ export async function generateStaticParams() {
   return movies.map((movie: MovieData) => ({ id: String(movie.id) }));
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string | string[] }>;
-}) {
-  const { id } = await params;
-
+async function MovieDetail({ id }: { id: string }) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/${id}`,
   );
@@ -36,33 +33,62 @@ export default async function Page({
 
   const movie = await response.json();
 
-  const {
-    title,
-    subTitle,
-    genres,
-    description,
-    runtime,
-    company,
-    releaseDate,
-    posterImgUrl,
-  } = movie;
-
   return (
     <div className={style.container}>
       <div
         className={style.cover_img_container}
-        style={{ backgroundImage: `url('${posterImgUrl}')` }}
+        style={{ backgroundImage: `url('${movie.posterImgUrl}')` }}
       >
-        <img src={posterImgUrl} />
+        <img src={movie.posterImgUrl} />
       </div>
-      <div className={style.title}>{title}</div>
+      <div className={style.title}>{movie.title}</div>
+      <div className={style.information}>{movie.releaseDate}</div>
       <div className={style.information}>
-        {releaseDate} / {genres.map((genre: string) => genre).join(", ")} /{" "}
-        {runtime}분
+        {movie.genres.map((genre: string) => genre).join(", ")}
       </div>
-      <div className={style.information}>{company}</div>
-      <div className={style.subTitle}>{subTitle}</div>
-      <div className={style.description}>{description}</div>
+      <div className={style.information}>{movie.runtime}분</div>
+      <div className={style.information}>{movie.company}</div>
+      <div className={style.subTitle}>{movie.subTitle}</div>
+      <div className={style.description}>{movie.description}</div>
     </div>
+  );
+}
+
+async function ReviewList({ id }: { id: string }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/movie/${id}`,
+    { next: { tags: [`review-${id}`] } },
+  );
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      notFound();
+    }
+    throw new Error(`Review fetch failed : ${response.statusText}`);
+  }
+
+  const reviews = await response.json();
+
+  return (
+    <section style={{ color: "white", marginTop: "20px" }}>
+      {reviews.map((review: ReviewData) => (
+        <ReviewItem key={`review-item-${review.id}`} {...review} />
+      ))}
+    </section>
+  );
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MovieDetail id={id} />
+      <ReviewEditor id={id} />
+      <ReviewList id={id} />
+    </Suspense>
   );
 }

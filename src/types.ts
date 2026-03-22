@@ -9,3 +9,11 @@ export interface MovieData {
   releaseDate: string;
   posterImgUrl: string;
 }
+
+export interface ReviewData {
+  id: number;
+  movieId: number;
+  content: string;
+  author: string;
+  createdAt: string;
+}
